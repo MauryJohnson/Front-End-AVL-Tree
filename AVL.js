@@ -130,7 +130,7 @@ function Delete(Dict){
 				Balance(Root);
 				return Data;
 			}
-			Delete({"Node":Node.right,"Data":Data});
+			Delete({"Root":Root,"NodesList":NodesList,"Node":Node.right,"Data":Data,"Balance":Balance});
 		}
 		else{
 			//Data Does not Exist
@@ -143,7 +143,7 @@ function Delete(Dict){
 				Balance(Root);
 				return Data;
 			}
-			Delete({"Node":Node.left,"Data":Data});
+			Delete({"Root":Root,"NodesList":NodesList,"Node":Node.left,"Data":Data,"Balance":Balance});
 		}
 		else{
 			//Data Does not Exist
