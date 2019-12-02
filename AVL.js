@@ -133,9 +133,7 @@ function Delete(Dict){
 			Delete({"Node":Node.right,"Data":Data});
 		}
 		else{
-			Node.right = new Node(Data);
-			Balance(Root);
-			return Data;
+			//Data Does not Exist
 		}
 	}
 	else if(Data<Node.data){
@@ -148,9 +146,7 @@ function Delete(Dict){
 			Delete({"Node":Node.left,"Data":Data});
 		}
 		else{
-			Node.left = new Node(Data);
-			Balance(Root);
-			return Data;
+			//Data Does not Exist
 		}
 	}
 	
