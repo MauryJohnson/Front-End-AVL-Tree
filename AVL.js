@@ -80,20 +80,43 @@ function insert(rootnode, data){
  * 	   0   2								node = node.left
  */
 
+function GetAllChildren(Dict){
+	var List = Dict["List"];
+	var Node = Dict["Node"];
+	if(!Node){
+		return null;
+	}
+	List.push(GetAllChildren({"Node":Node.right,"List":List}));
+	List.push(GetAllChildren({"Node":Node.left,"List":List}));
+	return Node;
+}
+
 function Delete(Dict){
 	
 	var Node = Dict["Node"];
+	
 	var Root = Dict["Root"];
+	if(!Root){
+		return;
+	}
 	var Data = Dict["Data"];
+	if(!Data){
+		return;
+	}
 	var Balance = Dict["Balance"];
+	if(!Balance){
+		return;
+	}
 	var NodesList = Dict["NodesList"];
+	if(!NodesList)
+		return;
 	
 	NodeList.push(Node);
 	
 	if(Node==null)
 		return null;
 	
-	if(Node==Root){
+	if(Node==Root && Data==Node.data){
 		//Get Furthest Right subchild of the left subchild
 		//If no root left
 			//New root is right
@@ -114,7 +137,8 @@ function Delete(Dict){
 				while(NodeLeft.right){
 					NodeLeft=NodeLeft.right;
 				}
-				Root=NodeLeft;
+				Root.data=NodeLeft.data;
+				NodeLeft=null;
 			}
 		}
 		
@@ -126,7 +150,15 @@ function Delete(Dict){
 	if(Data>Node.data){
 		if(Node.right){
 			if(Node.right.data==Data){
+				//Node.right=Node.right.right;
+				//Reinsert all children of Node Left
+				var Children = GetAllChildren({"List":[],"Node":Node.right.left});
 				Node.right=null;
+				for(var i in Children){
+					var Data = Children[i].data;
+					Children[i]=null;
+					insert(Root,Data);
+				}
 				Balance(Root);
 				return Data;
 			}
@@ -139,7 +171,15 @@ function Delete(Dict){
 	else if(Data<Node.data){
 		if(Node.left){
 			if(Node.left.data==Data){
+				//Node.left=null;
+				//Reinsert all children of Node Right
+				var Children = GetAllChildren({"List":[],"Node":Node.left.right});
 				Node.left=null;
+				for(var i in Children){
+					var Data = Children[i].data;
+					Children[i]=null;
+					insert(Root,Data);
+				}
 				Balance(Root);
 				return Data;
 			}
@@ -152,6 +192,7 @@ function Delete(Dict){
 	
 }
 
+/*
 Delete({
 	"Node":rootnode,
 	"Root":rootnode,
@@ -199,6 +240,8 @@ Delete({
 	,
 	"NodesList":[]
 });
+
+*/
 
 /*
 3.left = insert(2,1) -> node(2)  -> update height, blance, rotated if needed -> return node(3);
