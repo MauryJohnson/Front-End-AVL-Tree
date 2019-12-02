@@ -46,6 +46,7 @@ function insert(rootnode, data){
 	//update height
 	rootnode.height = max(height(rootnode.left),height(rootnode.right)) + 1;
 	bFactor =  getBalanceFactor(rootnode);
+	
 	//left left case
 	if(bFactor < -1 && data < rootnode.left.data){
 		return rotateRight(rootnode);
@@ -63,13 +64,144 @@ function insert(rootnode, data){
 	if(bFactor > 1 && data < rootnode.right.data){
 		rootnode.right = rotateRight(rootnode);
 		return rotateLeft(rootnode);
-		
 	}	
 	
 		
 	return rootnode;
 
 }
+/*
+ * 
+		 * 4 - Delete 4
+*		  /	\           4 is root
+* 	     1    5				take furthest right child of left subtree
+ * 		/ \								node=root.left
+ * 										while(!HasRight(node))
+ * 	   0   2								node = node.left
+ */
+
+function Delete(Dict){
+	
+	var Node = Dict["Node"];
+	var Root = Dict["Root"];
+	var Data = Dict["Data"];
+	var Balance = Dict["Balance"];
+	var NodesList = Dict["NodesList"];
+	
+	NodeList.push(Node);
+	
+	if(Node==null)
+		return null;
+	
+	if(Node==Root){
+		//Get Furthest Right subchild of the left subchild
+		//If no root left
+			//New root is right
+		//else 
+		
+		NodeList.remove(Root);
+		
+		if(!Root.left){
+			Root = Root.right;
+		}
+		else{
+			var NodeLeft = Root.left;
+			if(!NodeLeft.right){
+				Root=NodeLeft;
+			}
+			else{
+				//Get Furthest Right of NodeLeft
+				while(NodeLeft.right){
+					NodeLeft=NodeLeft.right;
+				}
+				Root=NodeLeft;
+			}
+		}
+		
+		NodeList.push(Root);
+		
+		Balance(Root);
+	}
+	
+	if(Data>Node.data){
+		if(Node.right){
+			if(Node.right.data==Data){
+				Node.right=null;
+				Balance(Root);
+				return Data;
+			}
+			Delete({"Node":Node.right,"Data":Data});
+		}
+		else{
+			Node.right = new Node(Data);
+			Balance(Root);
+			return Data;
+		}
+	}
+	else if(Data<Node.data){
+		if(Node.left){
+			if(Node.left.data==Data){
+				Node.left=null;
+				Balance(Root);
+				return Data;
+			}
+			Delete({"Node":Node.left,"Data":Data});
+		}
+		else{
+			Node.left = new Node(Data);
+			Balance(Root);
+			return Data;
+		}
+	}
+	
+}
+
+Delete({
+	"Node":rootnode,
+	"Root":rootnode,
+	"Data":1,
+	"Balance":function(NodesList){
+		//Call function for Balance of Root
+		
+		for(
+				
+			var i = NodesList.length-1;
+			
+			i>=0; 
+			
+			i-=1){
+			
+			NodesList[i].height -=1;
+			
+			var bFactor = getBalanceFactor(NodesList[i]);
+			
+			var rootnode = NodesList[i];
+			
+			//left left case
+			if(bFactor < -1 && data < rootnode.left.data){
+				return rotateRight(rootnode);
+			}
+			//left right case
+			if(bFactor < -1 && data > rootnode.left.data){
+				rootnode.left = rotateLeft(rootnode);
+				return rotateRight(rootnode);
+			}
+			//right right case
+			if(bFactor > 1 && data > rootnode.right.data){
+				return rotateRight(rootnode);
+			}
+			//right left case
+			if(bFactor > 1 && data < rootnode.right.data){
+				rootnode.right = rotateRight(rootnode);
+				return rotateLeft(rootnode);
+			}	
+			
+		}
+		
+	}
+	,
+	"NodesList":[]
+});
 
 /*
 3.left = insert(2,1) -> node(2)  -> update height, blance, rotated if needed -> return node(3);
