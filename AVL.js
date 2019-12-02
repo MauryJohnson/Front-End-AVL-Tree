@@ -173,6 +173,18 @@ Delete({
 			
 			NodesList[i].height -=1;
 			
+			
+		}
+		
+		for(
+				
+				var i = NodesList.length-1;
+				
+				i>=0; 
+				
+				i-=1){
+				
+
 			var bFactor = getBalanceFactor(NodesList[i]);
 			
 			var rootnode = NodesList[i];
@@ -185,6 +197,7 @@ Delete({
 			}
 			
 		}
+
 		
 	}
 	,
