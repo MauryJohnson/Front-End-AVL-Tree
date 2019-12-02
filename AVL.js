@@ -144,7 +144,7 @@ function Delete(Dict){
 		
 		NodeList.push(Root);
 		
-		Balance(Root);
+		Balance(NodeList);
 	}
 	
 	if(Data>Node.data){
@@ -152,14 +152,15 @@ function Delete(Dict){
 			if(Node.right.data==Data){
 				//Node.right=Node.right.right;
 				//Reinsert all children of Node Left
-				var Children = GetAllChildren({"List":[],"Node":Node.right.left});
+				var Children = [];
+				GetAllChildren({"List":Children,"Node":Node.left.right});
 				Node.right=null;
 				for(var i in Children){
 					var Data = Children[i].data;
 					Children[i]=null;
 					insert(Root,Data);
 				}
-				Balance(Root);
+				Balance(NodeList);
 				return Data;
 			}
 			Delete({"Root":Root,"NodesList":NodesList,"Node":Node.right,"Data":Data,"Balance":Balance});
@@ -173,14 +174,15 @@ function Delete(Dict){
 			if(Node.left.data==Data){
 				//Node.left=null;
 				//Reinsert all children of Node Right
-				var Children = GetAllChildren({"List":[],"Node":Node.left.right});
+				var Children = [];
+				GetAllChildren({"List":Children,"Node":Node.left.right});
 				Node.left=null;
 				for(var i in Children){
 					var Data = Children[i].data;
 					Children[i]=null;
 					insert(Root,Data);
 				}
-				Balance(Root);
+				Balance(NodeList);
 				return Data;
 			}
 			Delete({"Root":Root,"NodesList":NodesList,"Node":Node.left,"Data":Data,"Balance":Balance});
