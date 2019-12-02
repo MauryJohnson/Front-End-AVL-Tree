@@ -177,24 +177,12 @@ Delete({
 			
 			var rootnode = NodesList[i];
 			
-			//left left case
-			if(bFactor < -1 && data < rootnode.left.data){
-				return rotateRight(rootnode);
+			if(bFactor < -1 ){
+				rotateRight(rootnode);
 			}
-			//left right case
-			if(bFactor < -1 && data > rootnode.left.data){
-				rootnode.left = rotateLeft(rootnode);
-				return rotateRight(rootnode);
+			if(bFactor > 1 ){
+				rotateLeft(rootnode);
 			}
-			//right right case
-			if(bFactor > 1 && data > rootnode.right.data){
-				return rotateRight(rootnode);
-			}
-			//right left case
-			if(bFactor > 1 && data < rootnode.right.data){
-				rootnode.right = rotateRight(rootnode);
-				return rotateLeft(rootnode);
-			}	
 			
 		}
 		
