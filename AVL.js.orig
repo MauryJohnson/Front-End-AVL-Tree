@@ -749,26 +749,49 @@ function insert(Dict){
  * 	   0   2								node = node.left
  */
 
+function GetAllChildren(Dict){
+	var List = Dict["List"];
+	var Node = Dict["Node"];
+	if(!Node){
+		return null;
+	}
+	List.push(GetAllChildren({"Node":Node.right,"List":List}));
+	List.push(GetAllChildren({"Node":Node.left,"List":List}));
+	return Node;
+}
+
 function Delete(Dict){
 	
 	var Node = Dict["Node"];
+	
 	var Root = Dict["Root"];
+	if(!Root){
+		return;
+	}
 	var Data = Dict["Data"];
+	if(!Data){
+		return;
+	}
 	var Balance = Dict["Balance"];
-	var NodesList = Dict["NodesList"];
+	if(!Balance){
+		return;
+	}
+	var NodeList = Dict["NodeList"];
+	if(!NodeList)
+		return;
 	
 	NodeList.push(Node);
 	
 	if(Node==null)
 		return null;
 	
-	if(Node==Root){
+	if(Node==Root && Data==Node.data){
 		//Get Furthest Right subchild of the left subchild
 		//If no root left
 			//New root is right
 		//else 
 		
-		NodeList.remove(Root);
+		NodeList.splice(Root,1);
 		
 		if(!Root.left){
 			Root = Root.right;
@@ -783,23 +806,37 @@ function Delete(Dict){
 				while(NodeLeft.right){
 					NodeLeft=NodeLeft.right;
 				}
-				Root=NodeLeft;
+				Root.data=NodeLeft.data;
+				NodeLeft=null;
 			}
 		}
 		
 		NodeList.push(Root);
 		
-		Balance(Root);
+		Balance(NodeList);
 	}
 	
 	if(Data>Node.data){
 		if(Node.right){
 			if(Node.right.data==Data){
+				//Node.right=Node.right.right;
+				//Reinsert all children of Node Left
+				var Children = [];
+				GetAllChildren({"List":Children,"Node":Node.left.right});
+				
+				NodeList.splice(Node.right,1);
 				Node.right=null;
-				Balance(Root);
+				
+				for(var i in Children){
+					var Data = Children[i].data;
+					Children[i]=null;
+					insert(Root,Data);
+				}
+				
+				Balance(NodeList);
 				return Data;
 			}
-			Delete({"Root":Root,"NodesList":NodesList,"Node":Node.right,"Data":Data,"Balance":Balance});
+			Delete({"Root":Root,"NodeList":NodeList,"Node":Node.right,"Data":Data,"Balance":Balance});
 		}
 		else{
 			//Data Does not Exist
@@ -808,11 +845,24 @@ function Delete(Dict){
 	else if(Data<Node.data){
 		if(Node.left){
 			if(Node.left.data==Data){
+				//Node.left=null;
+				//Reinsert all children of Node Right
+				var Children = [];
+				GetAllChildren({"List":Children,"Node":Node.left.right});
+				
+				NodeList.splice(Node.left,1);
 				Node.left=null;
-				Balance(Root);
+			
+				for(var i in Children){
+					var Data = Children[i].data;
+					Children[i]=null;
+					insert(Root,Data);
+				}
+				
+				Balance(NodeList);
 				return Data;
 			}
-			Delete({"Root":Root,"NodesList":NodesList,"Node":Node.left,"Data":Data,"Balance":Balance});
+			Delete({"Root":Root,"NodeList":NodeList,"Node":Node.left,"Data":Data,"Balance":Balance});
 		}
 		else{
 			//Data Does not Exist
@@ -826,34 +876,34 @@ Delete({
 	"Node":rootnode,
 	"Root":rootnode,
 	"Data":1,
-	"Balance":function(NodesList){
+	"Balance":function(NodeList){
 		//Call function for Balance of Root
 		
 		for(
 				
-			var i = NodesList.length-1;
+			var i = NodeList.length-1;
 			
 			i>=0; 
 			
 			i-=1){
 			
-			NodesList[i].height -=1;
+			NodeList[i].height -=1;
 			
 			
 		}
 		
 		for(
 				
-				var i = NodesList.length-1;
+				var i = NodeList.length-1;
 				
 				i>=0; 
 				
 				i-=1){
 				
 
-			var bFactor = getBalanceFactor(NodesList[i]);
+			var bFactor = getBalanceFactor(NodeList[i]);
 			
-			var rootnode = NodesList[i];
+			var rootnode = NodeList[i];
 			
 			if(bFactor < -1 ){
 				rotateRight(rootnode);
@@ -867,9 +917,15 @@ Delete({
 		
 	}
 	,
-	"NodesList":[]
+	"NodeList":[]
 });
+<<<<<<< HEAD
 */
+=======
+
+*/
+
+>>>>>>> 6e2b891d63806cde291575fcf311354f086556d9
 /*
 3.left = insert(2,1) -> node(2)  -> update height, blance, rotated if needed -> return node(3);
 2.left = insert (null, 1) -> 1 after doing height and balance - > return node(2)
